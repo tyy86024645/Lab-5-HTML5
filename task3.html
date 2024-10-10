@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<div id="myDIV" class="header">
+  <input type="text" id="myInput" placeholder="Title...">
+  <button onclick="newElement()" class="addBtn">Add</button>
+</div>
+
+<ul id="myUL"></ul>
+
+<script>
+// Load existing tasks from Local Storage
+function loadTasks() {
+  const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  tasks.forEach(task => addTaskToList(task));
+}
+
+// Create and add task to the list
+function addTaskToList(task) {
+  var li = document.createElement("li");
+  var t = document.createTextNode(task);
+  li.appendChild(t);
+
+  // Create a close button
+  var button = document.createElement("button");
+  button.className = "close";
+  button.innerText = "×";
+  
+  // Add click event for close button
+  button.onclick = function() {
+    var div = this.parentElement;
+    div.style.display = "none";
+    removeTaskFromStorage(task);
+  };
+
+  li.appendChild(button);
+
+  // Add click event to toggle checked class
+  li.onclick = function() {
+    this.classList.toggle('checked');
+  };
+
+  document.getElementById("myUL").appendChild(li);
+}
+
+// Remove task from Local Storage
+function removeTaskFromStorage(task) {
+  const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  const updatedTasks = tasks.filter(t => t !== task);
+  localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+}
+
+// Create a new list item when clicking on the "Add" button
+function newElement() {
+  var inputValue = document.getElementById("myInput").value;
+  if (inputValue === '') {
+    alert("You must write something!");
+  } else {
+    addTaskToList(inputValue);
+    saveTaskToStorage(inputValue);
+  }
+  document.getElementById("myInput").value = "";
+}
+
+// Save task to Local Storage
+function saveTaskToStorage(task) {
+  const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  tasks.push(task);
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Initialize the application
+loadTasks();
+</script>
+
+</body>
+</html>
